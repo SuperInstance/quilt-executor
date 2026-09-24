@@ -35,6 +35,15 @@
   "conformance_vectors": {
     "café Δ 日本語": "0x24a555471370b18d"
   },
+  "discovery": {
+    "web": {
+      "chart": "GET /chart — this manifest, served live",
+      "export": "GET /ledger/export — machine-readable chain (asdict rows + genesis anchor)",
+      "rows": "GET /ledger/rows?since=n — raw row objects",
+      "verify": "GET /ledger/verify — native chain check",
+      "note": "a foreign vessel fetches /chart then /ledger/export and sails with zero hand-delivery"
+    }
+  },
   "constraints": {
     "runtime": "MicroPython >= 1.20 (no dataclasses, no asyncio, no typing)",
     "memory": "rows append-only; bounded devices should forward segments to a larger cell",

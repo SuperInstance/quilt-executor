@@ -105,6 +105,19 @@ class ForeignVessel:
         return {"seq": seq, "prev_hash": prev_hash, "kind": kind, "body": body,
                 "row_hash": self.hash(seal)}
 
+    def build_chain(self, entries: list) -> list:
+        """Full foreign genesis chain from (kind, body) entries — chart recipe only."""
+        rows = []
+        prev = "0" * 16
+        for i, (kind, body) in enumerate(entries, start=1):
+            row = self.compose_row(i, prev, kind, body)
+            rows.append(row)
+            prev = row["row_hash"]
+        return rows
+
+    def self_verify(self, rows: list):
+        return self.verify_chain(rows)
+
 
 def _export_native(rows) -> list[dict]:
     return [asdict(r) for r in rows]
@@ -165,6 +178,69 @@ class TestForeignVessel(unittest.TestCase):
         for path in ForeignVessel.REQUIRED_KEYS:
             self.assertIsNotNone(ForeignVessel._dig(MANIFEST, path),
                                  f"chart missing {path}")
+
+    def test_reciprocity_native_verifies_foreign_genesis_chain(self):
+        """Whole foreign chain is first-class native water: verify() accepts it,
+        and a forged foreign chain fails native verification."""
+        from executor.ledger import Ledger, ReceiptRow
+        v = ForeignVessel(MANIFEST)
+        rows = v.build_chain([("BIND", {"vessel": "foreign"}),
+                              ("EFFECT", {"catch": 1}),
+                              ("REFUSED", {"reason": "no wind"})])
+        ok, msg = v.self_verify(rows)
+        self.assertTrue(ok, msg)
+        led = Ledger(name="foreign-harbor")
+        led.rows = [ReceiptRow(seq=r["seq"], prev_hash=r["prev_hash"],
+                               kind=r["kind"], body=r["body"],
+                               row_hash=r["row_hash"]) for r in rows]
+        ok, problems = led.verify()
+        self.assertTrue(ok, problems)
+        # forged foreign chain must NOT pass native verification
+        rows[2]["body"] = {"reason": "forged manifest"}
+        led.rows = [ReceiptRow(seq=r["seq"], prev_hash=r["prev_hash"],
+                               kind=r["kind"], body=r["body"],
+                               row_hash=r["row_hash"]) for r in rows]
+        ok, _ = led.verify()
+        self.assertFalse(ok)
+
+    def test_harbor_mouth_no_hand_delivery(self):
+        """Fetch /chart + /ledger/export live; stranger verifies with ONLY the
+        fetched chart. No file paths, no executor imports in the sailing half."""
+        import threading
+        import urllib.request
+        from http.server import ThreadingHTTPServer
+        from executor.web import Handler, LEDGER
+        srv = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        port = srv.server_address[1]
+        t = threading.Thread(target=srv.serve_forever, daemon=True)
+        t.start()
+        try:
+            chart = json.loads(urllib.request.urlopen(
+                f"http://127.0.0.1:{port}/chart", timeout=5).read())
+            export = json.loads(urllib.request.urlopen(
+                f"http://127.0.0.1:{port}/ledger/export", timeout=5).read())
+        finally:
+            srv.shutdown()
+            t.join(timeout=5)
+        self.assertEqual(export["genesis"], "0" * 16)
+        stranger = ForeignVessel(chart)  # chart came over the wire, nothing local
+        self.assertTrue(stranger.verify_vector())
+        ok, msg = stranger.verify_chain(export["rows"])
+        self.assertTrue(ok, msg)
+
+    def test_peer_seas_two_foreign_vessels(self):
+        """Two strangers, zero native code: they cross-verify each other's
+        independently-built chains using only the shared chart."""
+        a = ForeignVessel(MANIFEST)
+        b = ForeignVessel(MANIFEST)
+        chain_a = a.build_chain([("EFFECT", {"vessel": "A", "catch": 7})])
+        chain_b = b.build_chain([("EFFECT", {"vessel": "B", "catch": 12}),
+                                 ("REFUSED", {"reason": "reef"})])
+        self.assertNotEqual(chain_a[0]["row_hash"], chain_b[0]["row_hash"])
+        self.assertTrue(a.verify_chain(chain_b)[0])
+        self.assertTrue(b.verify_chain(chain_a)[0])
+        chain_b[1]["body"] = {"reason": "rewritten"}
+        self.assertFalse(a.verify_chain(chain_b)[0])
 
 
 if __name__ == "__main__":

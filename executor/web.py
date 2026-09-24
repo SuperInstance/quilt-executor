@@ -10,15 +10,18 @@ from __future__ import annotations
 
 import json
 import time
+from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 
 from executor.ledger import Ledger, TaskRequest, TaskResult
 from executor import evaluator as evaluator_mod
-from executor import evaluator as evaluator_mod
 from executor.evaluator import Evaluator
 
 PORT = 8402
+_CHART_PATH = Path(__file__).resolve().parent.parent / "ports" / "embedded" / "manifest.json"
+MANIFEST = json.loads(_CHART_PATH.read_text())  # the harbor chart, served at sea
 
 
 def _fresh_stack() -> tuple[Ledger, Evaluator]:
@@ -64,6 +67,13 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"rows": LEDGER.rows[since:], "count": len(LEDGER.rows)})
         elif u.path == "/ledger/verify":
             self._json({"verify": LEDGER.verify()})
+        elif u.path == "/chart":
+            # the harbor mouth: a stranger needs nothing hand-delivered
+            self._json(MANIFEST)
+        elif u.path == "/ledger/export":
+            # machine-readable chain for foreign vessels (asdict rows, genesis anchor)
+            self._json({"rows": [asdict(r) for r in LEDGER.rows],
+                        "count": len(LEDGER.rows), "genesis": "0" * 16})
         elif u.path == "/stream":
             self._send(200, self._stream().encode(), "text/plain")
         elif u.path in ("/", "/health"):
