@@ -1,0 +1,187 @@
+{
+  "experiment": "ripple_spine_003",
+  "ts": "2026-09-25 05:59:35",
+  "means": {
+    "disorder": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "lambda": [
+      0.231052,
+      0.230225,
+      0.229706
+    ],
+    "abs_lambda": [
+      0.231052,
+      0.230225,
+      0.229706
+    ],
+    "nucleations": [
+      9.0,
+      9.0,
+      8.0
+    ]
+  },
+  "trials": {
+    "0.0": [
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      },
+      {
+        "lambda": 0.231052,
+        "nucleations": 9,
+        "final_divergence_log": -16.1022
+      }
+    ],
+    "0.5": [
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      },
+      {
+        "lambda": 0.230225,
+        "nucleations": 9,
+        "final_divergence_log": -16.1169
+      }
+    ],
+    "1.0": [
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      },
+      {
+        "lambda": 0.229706,
+        "nucleations": 8,
+        "final_divergence_log": -16.1257
+      }
+    ]
+  },
+  "findings": {
+    "H1_abs_lambda_decreases_with_disorder": {
+      "supported": false,
+      "concordance": 1.0,
+      "values": [
+        0.231052,
+        0.230225,
+        0.229706
+      ]
+    },
+    "H2_nucleation_monotone_in_disorder": {
+      "supported": false,
+      "concordance": 0.0,
+      "direction": "decreasing",
+      "values": [
+        9.0,
+        9.0,
+        8.0
+      ]
+    }
+  },
+  "boundary_segment": "the disorder dial is MONOTONE but nearly inert in-sim (|lambda| moves <1% across the full dial) and nucleation is flat (9,9,8) \u2014 the toy loom field barely feels the chaos dial; the otoc-echo chaos-as-input thesis is NOT observable on this substrate. Wall kind: substrate-mismatch (toy phase field != chaotic spin chain), not imagination-limit. Direction flag stands only for the real-qpu rewind fork (E7).",
+  "chain": {
+    "rows": 212,
+    "verify_ok": true,
+    "tip": "c0d1d2e83ce73b6c"
+  },
+  "caveat": "OTOC proxy is phase-divergence growth on a toy 24x24 phase field, not a statevector fidelity; otoc-echo comparison is qualitative only",
+  "next_experiments": [
+    "E7: hardware rewind fork \u2014 real qpu quota probe, otoc-echo on committed vs ghost states",
+    "E4: JEV comparative gate x20 paired trials (standing)",
+    "D12 falsification register: fold E2 sign-decoder failure + E3 dial non-transfer as first entries"
+  ]
+}
