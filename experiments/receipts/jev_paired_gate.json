@@ -1,0 +1,435 @@
+{
+  "result": {
+    "experiment": "E4-jev-paired-gate",
+    "trials": 20,
+    "completed": 20,
+    "coherent_preferred": 20,
+    "rate": 1.0,
+    "pre_registered": "above 50% = comparative gate carries signal",
+    "verdict": "signal"
+  },
+  "rows": [
+    {
+      "seq": 1,
+      "prev_hash": "0000000000000000",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 0,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 156.561
+      },
+      "row_hash": "963e89844844b2a6"
+    },
+    {
+      "seq": 2,
+      "prev_hash": "963e89844844b2a6",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 1,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.99,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 454,
+          "output_tokens": 33
+        },
+        "latency_s": 157.76
+      },
+      "row_hash": "1cd78a2446ea1707"
+    },
+    {
+      "seq": 3,
+      "prev_hash": "1cd78a2446ea1707",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 2,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.99,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 159.024
+      },
+      "row_hash": "14bdea398ac95d4b"
+    },
+    {
+      "seq": 4,
+      "prev_hash": "14bdea398ac95d4b",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 3,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 455,
+          "output_tokens": 33
+        },
+        "latency_s": 160.317
+      },
+      "row_hash": "6cf973d4a6e01adb"
+    },
+    {
+      "seq": 5,
+      "prev_hash": "6cf973d4a6e01adb",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 4,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.99,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 444,
+          "output_tokens": 33
+        },
+        "latency_s": 161.516
+      },
+      "row_hash": "1bc70e2b712cc107"
+    },
+    {
+      "seq": 6,
+      "prev_hash": "1bc70e2b712cc107",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 5,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 444,
+          "output_tokens": 33
+        },
+        "latency_s": 162.744
+      },
+      "row_hash": "aa2eaedbb70942be"
+    },
+    {
+      "seq": 7,
+      "prev_hash": "aa2eaedbb70942be",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 6,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 163.99
+      },
+      "row_hash": "69be29a7ff7e2aee"
+    },
+    {
+      "seq": 8,
+      "prev_hash": "69be29a7ff7e2aee",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 7,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 454,
+          "output_tokens": 33
+        },
+        "latency_s": 165.154
+      },
+      "row_hash": "6f92232f7fbeecdb"
+    },
+    {
+      "seq": 9,
+      "prev_hash": "6f92232f7fbeecdb",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 8,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.99,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 166.403
+      },
+      "row_hash": "ffdde2c2a6e00c73"
+    },
+    {
+      "seq": 10,
+      "prev_hash": "ffdde2c2a6e00c73",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 9,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 454,
+          "output_tokens": 33
+        },
+        "latency_s": 167.628
+      },
+      "row_hash": "626e1b5568b2c4cd"
+    },
+    {
+      "seq": 11,
+      "prev_hash": "626e1b5568b2c4cd",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 10,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.99,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 444,
+          "output_tokens": 33
+        },
+        "latency_s": 168.836
+      },
+      "row_hash": "203d766f3290b46d"
+    },
+    {
+      "seq": 12,
+      "prev_hash": "203d766f3290b46d",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 11,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 444,
+          "output_tokens": 33
+        },
+        "latency_s": 170.042
+      },
+      "row_hash": "a417d17792caa128"
+    },
+    {
+      "seq": 13,
+      "prev_hash": "a417d17792caa128",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 12,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 171.245
+      },
+      "row_hash": "81908b2738fdad97"
+    },
+    {
+      "seq": 14,
+      "prev_hash": "81908b2738fdad97",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 13,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 454,
+          "output_tokens": 33
+        },
+        "latency_s": 172.449
+      },
+      "row_hash": "e4ab9b28528010d7"
+    },
+    {
+      "seq": 15,
+      "prev_hash": "e4ab9b28528010d7",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 14,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.98,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 173.673
+      },
+      "row_hash": "83d13df58f18c66b"
+    },
+    {
+      "seq": 16,
+      "prev_hash": "83d13df58f18c66b",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 15,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 456,
+          "output_tokens": 33
+        },
+        "latency_s": 174.914
+      },
+      "row_hash": "5c7049e97acc9ceb"
+    },
+    {
+      "seq": 17,
+      "prev_hash": "5c7049e97acc9ceb",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 16,
+        "pick": "A",
+        "correct": true,
+        "confidence": 0.99,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 444,
+          "output_tokens": 33
+        },
+        "latency_s": 176.119
+      },
+      "row_hash": "e1452141b5a0b09f"
+    },
+    {
+      "seq": 18,
+      "prev_hash": "e1452141b5a0b09f",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 17,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 444,
+          "output_tokens": 33
+        },
+        "latency_s": 177.359
+      },
+      "row_hash": "0cd289564df015d2"
+    },
+    {
+      "seq": 19,
+      "prev_hash": "0cd289564df015d2",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 18,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 448,
+          "output_tokens": 33
+        },
+        "latency_s": 178.559
+      },
+      "row_hash": "ade553ad88fa9db8"
+    },
+    {
+      "seq": 20,
+      "prev_hash": "ade553ad88fa9db8",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "paired_gate",
+        "trial": 19,
+        "pick": "A",
+        "correct": true,
+        "confidence": 1.0,
+        "model": "jev-1.13.0",
+        "usage": {
+          "input_tokens": 454,
+          "output_tokens": 33
+        },
+        "latency_s": 179.762
+      },
+      "row_hash": "d3eed01ffd6907ac"
+    },
+    {
+      "seq": 21,
+      "prev_hash": "d3eed01ffd6907ac",
+      "kind": "EFFECT",
+      "body": {
+        "substrate": "jev",
+        "op": "e4_summary",
+        "experiment": "E4-jev-paired-gate",
+        "trials": 20,
+        "completed": 20,
+        "coherent_preferred": 20,
+        "rate": 1.0,
+        "pre_registered": "above 50% = comparative gate carries signal",
+        "verdict": "signal"
+      },
+      "row_hash": "820eb75e178ed8af"
+    }
+  ],
+  "chain_ok": [
+    true,
+    []
+  ],
+  "tip": "1eb5e8de706c8399"
+}
