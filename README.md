@@ -88,7 +88,7 @@ be the bug — and the sea-trial in section 5 is built to catch exactly that.
 ### 5. Sea-trial
 
 ```bash
-python -m pytest tests/ -q        # 57 pins
+python -m pytest tests/ -q        # 77 pins
 ```
 
 The suite includes the Stranger's Sea-Trial (`tests/test_foreign_vessel.py`):
