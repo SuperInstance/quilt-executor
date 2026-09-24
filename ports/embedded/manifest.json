@@ -1,15 +1,36 @@
 {
   "port": "quilt-executor/embedded",
   "family": "quilt-receipts",
-  "recipe_version": "RECEIPTS_V1",
+  "recipe_version": "RECEIPTS_V2",
   "opcodes": ["BIND", "LINK", "EFFECT", "VIEW", "TICK", "REFUSED", "FORGET"],
   "chain": {
     "algorithm": "fnv1a-64",
     "offset_basis": "0xcbf29ce484222325",
     "prime": "0x100000001b3",
-    "canon": "json sort_keys separators=(',',':') ensure_ascii=False utf-8",
+    "mask": "0xffffffffffffffff",
+    "canon": {
+      "format": "json",
+      "sort_keys": true,
+      "separators": [",", ":"],
+      "ensure_ascii": false,
+      "encoding": "utf-8"
+    },
+    "hash_input_rule": "str values hash as raw utf-8 bytes (bytes-law); all other values hash canon(obj) first",
     "row_fields": ["op", "actor", "tick", "parent", "payload", "payload_hash", "row_hash"],
     "genesis_parent": "0x0000000000000000"
+  },
+  "substrates": {
+    "embedded": {
+      "row_schema": ["op", "actor", "tick", "parent", "payload", "payload_hash", "row_hash"],
+      "seal_body": {"op": "str", "actor": "str", "tick": "int", "parent": "str", "payload": "any", "payload_hash": "str"},
+      "note": "row_hash = h(seal_body); h = fnv1a64(canon(seal_body)) with hex16 lowercase, 0x-prefixed"
+    },
+    "executor": {
+      "row_schema": ["seq", "prev_hash", "kind", "body", "row_hash"],
+      "seal_body": {"seq": "int", "prev": "str (prev_hash)", "kind": "str", "body": "any"},
+      "hash_encoding": "hex16 lowercase, NO 0x prefix",
+      "note": "row_hash = fnv1a64_int(canon(seal_body)) formatted %016x; first row prev_hash = genesis (16 zero chars)"
+    }
   },
   "conformance_vectors": {
     "café Δ 日本語": "0x24a555471370b18d"
@@ -19,10 +40,11 @@
     "memory": "rows append-only; bounded devices should forward segments to a larger cell",
     "time": "tick counter authoritative (chain before/after); wall clock advisory"
   },
-  "cross_check": "rows booked here MUST verify on the Python substrate (executor.ledger) and the arena harness (kev); chain is the portable format",
+  "cross_check": "rows booked on ANY substrate verify on every other; the chain is the portable format; a foreign vessel holding only this manifest plus a chain export must be able to verify and extend without importing our code",
   "doctrine": [
     "receipts over self-report",
     "visible refusals: cannot-do books REFUSED with the reason",
-    "fallbacks are first-class rows, never silent"
+    "fallbacks are first-class rows, never silent",
+    "the chart must suffice: no hidden knowledge outside this manifest"
   ]
 }
