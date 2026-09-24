@@ -1,0 +1,16 @@
+{
+  "repo": "quilt-executor",
+  "role": "custody layer — how a chain is carried (registry = what a receipt means)",
+  "walkers": [
+    {"name": "ledger", "module": "executor.ledger", "envelope": "RECEIPTS_V2 executor hull"},
+    {"name": "witness-bridge", "module": "executor.witness", "envelope": "registry ACCEPT/DRIFT/REFUSE"},
+    {"name": "gravity-field", "module": "executor.gravity", "envelope": "moth/jepa/jev cells"},
+    {"name": "qcell", "module": "executor.qcell", "envelope": "quantum entropy + kernel receipts"},
+    {"name": "harbor-snapshot", "module": "executor.harbor_snapshot", "envelope": "fleet-snapshot convention, harbor surface"}
+  ],
+  "chart": "ports/embedded/manifest.json",
+  "discovery": {
+    "web": {"chart": "/chart", "export": "/ledger/export"}
+  },
+  "pins": "python3 -m pytest tests"
+}
