@@ -1,0 +1,51 @@
+{
+  "experiment": "ripple_spine_001",
+  "ts": "2026-09-25 03:01:32",
+  "runs": {
+    "A": {
+      "label": "A_attended",
+      "ripples_on": true,
+      "committed": 2,
+      "final_active": 45,
+      "reinstatement": 0.7231,
+      "mean_commit_coh": 0.5065
+    },
+    "B": {
+      "label": "B_unattended",
+      "ripples_on": false,
+      "committed": 0,
+      "final_active": 20,
+      "reinstatement": 0.2681,
+      "mean_commit_coh": 0.0
+    }
+  },
+  "finding": {
+    "claim": "ripple-committed granules reinstate stimulus pattern at probes; uncommitted waves decay",
+    "reinstatement_A": 0.7231,
+    "reinstatement_B": 0.2681,
+    "committed_A": 2,
+    "committed_B": 0,
+    "supports_ripple_loom": true,
+    "caveat": "toy 24x24 phase field; 'consciousness' here = operational reinstatement metric only"
+  },
+  "rewind_fork": {
+    "die": 5,
+    "chirality": -1,
+    "committed_after_fork": 2
+  },
+  "chain": {
+    "rows": 10,
+    "verify_ok": true,
+    "tip": "f6c5bbca45eff4ac"
+  },
+  "next_experiments": [
+    "E2: chirality x task-mode grid (explore vs consolidate spiral direction classification)",
+    "E3: OTOC lambda of the field vs spiral nucleation rate (chaos dial on the loom)",
+    "E4: JEV comparative gate: committed-granule claims vs ghost claims, 20 paired trials",
+    "E5: certified-entropy nucleation of wave birth points, 1000 trials, threshold-shape test"
+  ],
+  "jev_science_gate": {
+    "noul": 0.4,
+    "question_form": "comparative (per F4 lesson from quantum-chaos-001)"
+  }
+}
