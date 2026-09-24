@@ -21,7 +21,7 @@ dev = ["pytest>=8"]
 quilt-executor-web = "executor.web:main"
 
 [tool.setuptools]
-packages = ["executor", "router", "deciders", "arena_bridge"]
+packages = ["executor", "router"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
