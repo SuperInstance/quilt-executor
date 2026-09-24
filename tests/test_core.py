@@ -162,5 +162,63 @@ class TestRouter(unittest.TestCase):
         self.assertEqual(lp["constraints"][0]["name"], "one_provider_per_task")
 
 
+class TestEvaluatorMemory(unittest.TestCase):
+    def setUp(self):
+        import executor.evaluator as ev
+        self.ev = ev
+        self.L = Ledger()
+        ev.bind_ledger(self.L)
+
+    def _req_res(self, output="some real output text", error=None):
+        req = TaskRequest(task_id="e1", prompt="do a thing", task_type="code")
+        res = TaskResult(output, "kimi", 800.0, 0.0002, error=error)
+        return req, res
+
+    def test_evaluate_books_effect(self):
+        import asyncio
+        req, res = self._req_res()
+        score = asyncio.run(self.ev.Evaluator().evaluate(req, res))
+        self.assertGreaterEqual(score.overall, 0.0)
+        self.assertEqual([r.kind for r in self.L.rows], ["EFFECT"])
+        self.assertEqual(res.metadata.get("ledger"), "booked:core4")
+        self.assertTrue(self.L.verify()[0])
+
+    def test_degenerate_output_scored_zero_not_crash(self):
+        import asyncio
+        req, res = self._req_res(output="")
+        score = asyncio.run(self.ev.Evaluator().evaluate(req, res))
+        self.assertEqual(score.overall, 0.0)
+        self.assertEqual([r.kind for r in self.L.rows], ["EFFECT"])  # refusal-scored, still receipted
+
+    def test_unbound_ledger_visible_error(self):
+        import asyncio
+        self.ev.bind_ledger(None)
+        req, res = self._req_res()
+        asyncio.run(self.ev.Evaluator().evaluate(req, res))
+        self.assertIn("error:", res.metadata.get("ledger", ""))
+        self.ev.bind_ledger(self.L)
+
+    def test_memory_cache_ledger_reflex(self):
+        from executor.memory import ExecutionMemory
+        req, res = self._req_res()
+        mem = ExecutionMemory(max_size=2)
+        mem.put(req, res, 0.8)
+        hit = mem.get(req)
+        self.assertIsNotNone(hit)
+        self.assertTrue(hit.provider.endswith(":cached"))
+        self.assertEqual(mem.quality_ledger()["kimi"], 0.8)
+        self.assertEqual(mem.reflex_table()[("code", "kimi")]["n"], 1.0)
+
+    def test_memory_eviction_fifo(self):
+        from executor.memory import ExecutionMemory
+        mem = ExecutionMemory(max_size=1)
+        r1, res = self._req_res()
+        mem.put(r1, res, 0.8)
+        r2 = TaskRequest(task_id="e2", prompt="other prompt", task_type="code")
+        mem.put(r2, res, 0.7)
+        self.assertIsNone(mem.get(r1))
+        self.assertGreater(mem.evictions, 0)
+
+
 if __name__ == "__main__":
     unittest.main()
