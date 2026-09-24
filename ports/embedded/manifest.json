@@ -1,0 +1,28 @@
+{
+  "port": "quilt-executor/embedded",
+  "family": "quilt-receipts",
+  "recipe_version": "RECEIPTS_V1",
+  "opcodes": ["BIND", "LINK", "EFFECT", "VIEW", "TICK", "REFUSED", "FORGET"],
+  "chain": {
+    "algorithm": "fnv1a-64",
+    "offset_basis": "0xcbf29ce484222325",
+    "prime": "0x100000001b3",
+    "canon": "json sort_keys separators=(',',':') ensure_ascii=False utf-8",
+    "row_fields": ["op", "actor", "tick", "parent", "payload", "payload_hash", "row_hash"],
+    "genesis_parent": "0x0000000000000000"
+  },
+  "conformance_vectors": {
+    "café Δ 日本語": "0x24a555471370b18d"
+  },
+  "constraints": {
+    "runtime": "MicroPython >= 1.20 (no dataclasses, no asyncio, no typing)",
+    "memory": "rows append-only; bounded devices should forward segments to a larger cell",
+    "time": "tick counter authoritative (chain before/after); wall clock advisory"
+  },
+  "cross_check": "rows booked here MUST verify on the Python substrate (executor.ledger) and the arena harness (kev); chain is the portable format",
+  "doctrine": [
+    "receipts over self-report",
+    "visible refusals: cannot-do books REFUSED with the reason",
+    "fallbacks are first-class rows, never silent"
+  ]
+}
