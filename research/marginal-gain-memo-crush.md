@@ -1,0 +1,9 @@
+**(1) The formula.** Escalate iff
+
+**Δ̂(x) = Ŝ(x, e_exp) − Ŝ(x, e_cheap) > λ·(c_exp − c_cheap)**
+
+where Ŝ(x, e) is a posterior-predictive probability of *verified* success (blind judge or test pass, never executor self-report), trained on fleet logs over features x = {task_type, token count, ambiguity markers (underspecified pronouns, missing acceptance criteria), repo-touch breadth, dependency count} ∪ bandit posteriors (n, α/β) per (type, provider). Two honesty conditions: (a) Δ̂ must be the difference of *two* conditional predictions on the *same* x — "cheap's posterior looks fine, skip" is not a gain estimate, it's an excuse; (b) route on the posterior predictive, integrating parameter uncertainty, so thin data widens the interval instead of collapsing gain to zero.
+
+**(2) Where it lies.** Counterfactual censoring at the decision boundary. S is only observed for the executor that ran. In feature strata where lookalike tasks were historically routed cheap and passed, Ŝ(x, e_exp) is an extrapolation wearing a confidence interval — the model reports its *smallest* gain exactly where the counterfactual is *unidentified*. So "predicted gain ≈ 0" means "unmeasured," not "no gain." The bias is one-sided: cheap executors fail silently (confidently wrong code passes weak verification), which never triggers escalation, so Δ̂ tilts cheap. Then the loop seals: never escalate ambiguous strata → no expensive data there → posterior never updates → gain stays 0. Stagnation disguised as calibration.
+
+**(3) The instrument.** Stratified dual-run: on ε% of tasks, oversampling the gain≈0 boundary stratum, run *both* executors blind-scored. Report one number: **mean realized Δ among tasks the router declined to escalate.** Systematically positive (and > cost delta) = the criterion lies, with the exact magnitude of the lie.
