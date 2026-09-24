@@ -30,7 +30,9 @@ class KimiProvider:
     """Real KIMI_API_KEY call. The key goes to the turbulence edge on purpose."""
 
     name = "kimi"
-    API = "https://api.moonshot.ai/v1/chat/completions"
+    # Kimi coding gateway (the auth path KIMI_API_KEY is actually scoped for);
+    # api.moonshot.ai direct calls 401 with this key — verified by smoke.
+    API = "https://agent-gw.kimi.com/coding/v1/chat/completions"
 
     def __init__(self, model: str = "kimi-k2-0711-preview", max_tokens: int = 256):
         self.model = model
@@ -53,16 +55,24 @@ class KimiProvider:
                     "model": self.model,
                     "messages": [{"role": "user", "content": request.prompt}],
                     "max_tokens": self.max_tokens,
-                    "temperature": 0.2,
+                    # coding gateway pins temperature=1 for this model (400 otherwise)
+                    "temperature": 1,
                 }).encode(),
                 headers={"Authorization": f"Bearer {os.environ['KIMI_API_KEY']}",
                          "Content-Type": "application/json"},
             )
             with urllib.request.urlopen(req, timeout=60) as resp:
                 payload = json.loads(resp.read())
-            out = payload["choices"][0]["message"]["content"]
+            ch = payload["choices"][0]
+            out = ch["message"].get("content") or ""
+            usage = payload.get("usage", {})
+            meta = {
+                "finish_reason": ch.get("finish_reason"),
+                "reasoning_tokens": usage.get("completion_tokens_details", {}).get("reasoning_tokens"),
+                "total_tokens": usage.get("total_tokens"),
+            }
             return TaskResult(out, self.name, (time.monotonic() - start) * 1000,
-                              self.estimate_cost(request))
+                              self.estimate_cost(request), metadata=meta)
         except Exception as e:  # network failure is a result, not a crash
             return TaskResult("", self.name, (time.monotonic() - start) * 1000,
                               0.0, error=str(e)[:200])
