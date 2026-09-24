@@ -56,7 +56,7 @@ def book_witness(ledger: Ledger, envelope: dict) -> "object":
             TaskRequest(task_id=f"witness:{envelope.get('witness_id', '?')}",
                         prompt=json.dumps(envelope, sort_keys=True)[:200]),
             "witness_bridge", "; ".join(errors))
-    return ledger._next(WITNESS_KIND, {"envelope": envelope, "validator": validator})
+    return ledger.book(WITNESS_KIND, {"envelope": envelope, "validator": validator})
 
 
 def _registry_available() -> bool:

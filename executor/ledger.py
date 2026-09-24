@@ -89,6 +89,10 @@ class Ledger:
         self.rows.append(row)
         return row
 
+    def book(self, kind: str, body: dict) -> ReceiptRow:
+        """Public generic booking — the extension point for new row kinds."""
+        return self._next(kind, body)
+
     def book_bind(self, request: TaskRequest) -> ReceiptRow:
         """Intent filed. The task exists because this row says so."""
         return self._next("BIND", {
