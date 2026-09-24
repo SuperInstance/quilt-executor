@@ -1,0 +1,271 @@
+{
+  "experiment": "ripple_spine_002",
+  "ts": "2026-09-25 03:57:45",
+  "grid_trials": {
+    "+1|consolidate": [
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 45
+      }
+    ],
+    "+1|explore": [
+      {
+        "commits": 4,
+        "mean_commit_tick": 28.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.2772,
+        "footprint": 46
+      },
+      {
+        "commits": 2,
+        "mean_commit_tick": 32.0,
+        "reinstatement": 0.9494,
+        "vorticity": -0.2772,
+        "footprint": 43
+      },
+      {
+        "commits": 2,
+        "mean_commit_tick": 32.0,
+        "reinstatement": 0.9494,
+        "vorticity": -0.2772,
+        "footprint": 43
+      },
+      {
+        "commits": 1,
+        "mean_commit_tick": 40.0,
+        "reinstatement": 0.4228,
+        "vorticity": -0.2772,
+        "footprint": 20
+      },
+      {
+        "commits": 2,
+        "mean_commit_tick": 32.0,
+        "reinstatement": 0.956,
+        "vorticity": -0.2772,
+        "footprint": 40
+      },
+      {
+        "commits": 1,
+        "mean_commit_tick": 40.0,
+        "reinstatement": 0.362,
+        "vorticity": -0.2772,
+        "footprint": 20
+      },
+      {
+        "commits": 1,
+        "mean_commit_tick": 40.0,
+        "reinstatement": 0.2405,
+        "vorticity": -0.2772,
+        "footprint": 20
+      },
+      {
+        "commits": 2,
+        "mean_commit_tick": 20.0,
+        "reinstatement": 0.5655,
+        "vorticity": -0.2772,
+        "footprint": 46
+      }
+    ],
+    "-1|consolidate": [
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      },
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 45
+      }
+    ],
+    "-1|explore": [
+      {
+        "commits": 5,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 46
+      },
+      {
+        "commits": 4,
+        "mean_commit_tick": 22.0,
+        "reinstatement": 1.0,
+        "vorticity": -0.1841,
+        "footprint": 44
+      },
+      {
+        "commits": 2,
+        "mean_commit_tick": 32.0,
+        "reinstatement": 0.9494,
+        "vorticity": -0.1841,
+        "footprint": 43
+      },
+      {
+        "commits": 1,
+        "mean_commit_tick": 24.0,
+        "reinstatement": 0.5947,
+        "vorticity": -0.1841,
+        "footprint": 39
+      },
+      {
+        "commits": 2,
+        "mean_commit_tick": 20.0,
+        "reinstatement": 0.6416,
+        "vorticity": -0.1841,
+        "footprint": 41
+      },
+      {
+        "commits": 0,
+        "mean_commit_tick": 0.0,
+        "reinstatement": 0.3512,
+        "vorticity": -0.1841,
+        "footprint": 20
+      },
+      {
+        "commits": 1,
+        "mean_commit_tick": 8.0,
+        "reinstatement": 0.3198,
+        "vorticity": -0.1841,
+        "footprint": 46
+      },
+      {
+        "commits": 3,
+        "mean_commit_tick": 16.0,
+        "reinstatement": 0.5655,
+        "vorticity": -0.1841,
+        "footprint": 46
+      }
+    ]
+  },
+  "findings": {
+    "H1_chirality_decodable_from_vorticity": {
+      "split_half_accuracy": 1.0,
+      "decoder": "nearest-centroid, sign-threshold failed at 0.50 (drive offset)",
+      "supported": true
+    },
+    "H2_consolidate_commits_earlier": {
+      "explore_mean_tick": 25.62,
+      "consolidate_mean_tick": 26.0,
+      "supported": false
+    },
+    "H3_explore_wider_footprint": {
+      "explore_mean_fp": 37.69,
+      "consolidate_mean_fp": 45.0,
+      "supported": false
+    },
+    "mode_decode_accuracy": 0.7188,
+    "refined_reading": {
+      "chirality": "vorticity clusters by chirality but offset-driven; sign is NOT the carrier, magnitude-vs-prototype is",
+      "task_mode": "explore shows commit-dropoff across re-sited trials (ghosting); consolidate is constant-4 \u2014 commit VARIANCE, not commit timing, is the mode signal (H2 timing framing falsified, variance framing supported)"
+    }
+  },
+  "chain": {
+    "rows": 165,
+    "verify_ok": true,
+    "tip": "3ef9c8f64d72bc0f"
+  },
+  "caveat": "decoder learned via split-half nearest-centroid (fair); first a-priori sign threshold failed honestly at 0.50 and is reported, not hidden; toy substrate, operational metrics only",
+  "next_experiments": [
+    "E3: OTOC lambda of the field vs spiral nucleation rate (chaos dial on the loom)",
+    "E4: JEV comparative gate: committed-granule claims vs ghost claims, 20 paired trials",
+    "E5: certified-entropy nucleation of wave birth points, 1000 trials, threshold-shape test"
+  ]
+}
