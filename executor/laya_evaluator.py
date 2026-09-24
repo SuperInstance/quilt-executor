@@ -6,6 +6,9 @@ This module is the executor-owned half of the contract:
 
 - per-axis fallback chain  laya -> heuristics -> (reference beats laya for
   correctness when a checkable reference exists) -> escalation to the slow path
+- lease -> gate wiring (BUILD_NOTES #7): when a LeaseBook is supplied, the
+  gate lookup consumes its live time-decayed weight — grant keeps the table
+  gate, decay tightens it toward 1.0, no/expired grant escalates as typed ood
 - typed ABSENCE rows (six types) staged with dual-clock cost, then booked on
   the ONE executor ledger via the REFUSED opcode; refusal is bandit-neutral by
   construction — laya scores never touch alpha/beta here, only slow-path
@@ -103,6 +106,10 @@ CHARS_PER_TOKEN: float = 4.0
 
 #: Sentinel returned by CalibrationTable.lookup when a row may not be gated.
 ESCALATE = "escalate"
+#: Lease→gate wiring: a granted lease whose time-decayed weight has fallen
+#: below this floor may not gate (escalate as typed ``ood`` instead).  One
+#: half-life after grant, by construction of LeaseBook.weight().
+LEASE_WEIGHT_FLOOR: float = 0.5
 
 #: The four quality axes of the executor quintet (judge-seat order).
 AXIS_ORDER: tuple[str, ...] = ("correctness", "completeness", "honesty", "conciseness")
@@ -677,13 +684,18 @@ class LayaEvaluator:
                  clock: Optional[Clock] = None,
                  adapter: Optional[Any] = None,
                  season_fn: Optional[Any] = None,
-                 decider: Optional[Any] = None) -> None:
+                 decider: Optional[Any] = None,
+                 lease_book: Optional["LeaseBook"] = None) -> None:
         self._gate_table = gate_table if gate_table is not None else CalibrationTable()
         self._max_state_chars = int(max_state_chars)
         self._clock = clock if clock is not None else SystemClock()
         self._adapter = adapter if adapter is not None else LayaAdapter()
         self._season_fn = season_fn  # else derived from the gate table
         self._decider = decider  # observed for receipts; NEVER updated here
+        # Lease→gate wiring: when a LeaseBook is wired in, the gate lookup
+        # CONSUMES its live weight — no grant, or a decayed weight under the
+        # floor, escalates as typed ``ood`` (bandit-neutral as ever).
+        self._lease_book = lease_book
         self._import_error = getattr(self._adapter, "_import_error", None)
 
     # -- §2.2 state construction: STRING ONLY, hashed before predict --------
@@ -817,6 +829,35 @@ class LayaEvaluator:
             meta["gate"] = {"value": gate, "calibrated": False,
                             "note": "0.55/0.60 are bootstrap placeholders (loading state)"}
 
+            # -- lease -> gate wiring (BUILD_NOTES #7): the table alone is a
+            # loading state; the lease's LIVE weight is what authorizes
+            # gating on it.  Weight 1.0 at grant keeps the table gate; decay
+            # tightens the gate toward 1.0 (less served, heuristics absorb —
+            # bandit-neutral); below the floor (or no grant at all) the row
+            # escalates as typed ``ood``.  Routing ambiguity still outranks.
+            lease_escalated = False
+            meta["lease"] = None
+            if self._lease_book is not None:
+                lstat = self._lease_book.status(task_type, season_id, tick0)
+                lw = float(lstat["weight"])
+                meta["lease"] = {"granted": lstat["granted"], "weight": round(lw, 4),
+                                 "pairs": lstat["pairs"], "p99_delta": lstat["p99_delta"],
+                                 "refusal_rate": lstat["refusal_rate"],
+                                 "reasons": lstat["reasons"]}
+                if gate is not ESCALATE:
+                    if not lstat["granted"]:
+                        gate, lease_escalated = ESCALATE, True
+                        meta["gate"]["lease"] = "not_granted"
+                    elif lw < LEASE_WEIGHT_FLOOR:
+                        gate, lease_escalated = ESCALATE, True
+                        meta["gate"]["lease"] = (f"weight {lw:.4f} < "
+                                                 f"floor {LEASE_WEIGHT_FLOOR}")
+                    else:
+                        g0 = float(gate)
+                        gate = g0 + (1.0 - lw) * (1.0 - g0)
+                        meta["gate"]["lease_weighted"] = round(gate, 6)
+                meta["gate"]["value"] = gate  # the gate that ACTUALLY decided
+
             base = dict(task_id=task_id, served_by=served_by,
                         visibility=visibility, routing=routing)
 
@@ -845,13 +886,22 @@ class LayaEvaluator:
                           escalated_to="judge")
             elif gate is ESCALATE:
                 # Routing-ambiguous rows escalate NEVER gate; a cold stratum is
-                # out of laya's fitted distribution (ood) — same treatment.
+                # out of laya's fitted distribution (ood) — same treatment; a
+                # missing/expired lease escalates as ``ood`` with the lease
+                # guard, naming the bar that failed (BUILD_NOTES #7).
                 if ambiguous:
                     for axis in AXIS_ORDER:
                         stage(axis, "router_failure",
                               {"guard": "routing_ambiguity",
                                "value": route_info.get("router_score"), "threshold": None},
                               ["route_via_slow_path", "router_refit"], escalated_to="judge")
+                elif lease_escalated:
+                    for axis in AXIS_ORDER:
+                        stage(axis, "ood",
+                              {"guard": "lease", "value": meta["gate"].get("lease"),
+                               "threshold": LEASE_WEIGHT_FLOOR},
+                              ["lease_scope_check", "season_refit_or_slow_path"],
+                              escalated_to="judge")
                 else:
                     for axis in AXIS_ORDER:
                         stage(axis, "ood",
