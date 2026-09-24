@@ -155,12 +155,159 @@ class EnvSlotProvider:
         return 30_000.0
 
 
+class JevProviderBase:
+    """Shared shape for the two live arms below (kept tiny on purpose)."""
+
+    def estimate_cost(self, request: TaskRequest) -> float:
+        return 0.001
+
+    def estimate_latency_ms(self, request: TaskRequest) -> float:
+        return 30_000.0
+
+
+class TypeSafeProvider(JevProviderBase):
+    """typesafe.ai JEV oracle — the canon judge, live.
+
+    Contract (task_type="jev-gate"): request.prompt is the artifact text,
+    request.context["question"] is the yes/no claim to score. Returns the
+    noul probability as output; usage + model ride metadata.
+    Keys accepted in order: TYPESAFE_API_KEY, TYPESAFEAI_KEY (Casey's
+    handoff name — both spellings live).
+    """
+
+    name = "typesafe"
+    API = "https://api.typesafe.ai/v1/systemone"
+
+    def _key(self) -> str:
+        return (os.environ.get("TYPESAFE_API_KEY")
+                or os.environ.get("TYPESAFEAI_KEY") or "")
+
+    def available(self, request: TaskRequest) -> tuple[bool, str]:
+        if not self._key():
+            return False, "TYPESAFE_API_KEY unset (slot reserved)"
+        return True, "ok"
+
+    def execute(self, request: TaskRequest) -> TaskResult:
+        ok, why = self.available(request)
+        if not ok:
+            return TaskResult("", self.name, 0.0, 0.0, error=f"refused:{why}")
+        question = request.context.get(
+            "question",
+            "Does this content describe quilt-native, receipt-chained, "
+            "deterministic fleet engineering? Answer yes or no.")
+        start = time.monotonic()
+        try:
+            body = json.dumps({
+                "state": request.prompt,
+                "model": request.context.get("model", "jev-latest"),
+                "questions": {"x": {"type": "noul", "instructions": question}},
+            }).encode()
+            req = urllib.request.Request(
+                self.API, method="POST", data=body,
+                headers={"Authorization": f"Bearer {self._key()}",
+                         "Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                payload = json.loads(resp.read())
+            ans = payload.get("answers", {}).get("x", {})
+            noul = ans.get("noul")
+            return TaskResult(str(noul), self.name,
+                              (time.monotonic() - start) * 1000,
+                              self.estimate_cost(request),
+                              metadata={"model": payload.get("model"),
+                                        "usage": payload.get("usage", {})})
+        except Exception as e:
+            return TaskResult("", self.name, (time.monotonic() - start) * 1000,
+                              0.0, error=str(e)[:200])
+
+
+class MothQuantumProvider(JevProviderBase):
+    """mothquantum.com quantum engines — certified RNG, OTOC chaos probes.
+
+    Contract (task_type="quantum-job"): request.context carries
+    {"engine": str, "params": dict, "poll_s": float, "max_polls": int}.
+    Returns the result JSON as output; job_id + fingerprints ride metadata.
+    The API sits behind a bot filter: browser User-Agent is REQUIRED
+    (bare urllib gets Cloudflare 403 / error code 1010 — field-verified).
+    Keys accepted in order: MOTHQUANTUM_API_KEY, MOTHQUANTUM_KEY.
+    """
+
+    name = "mothquantum"
+    API = "https://api.mothquantum.com/api/v1"
+    UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+          "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
+
+    def _key(self) -> str:
+        return (os.environ.get("MOTHQUANTUM_API_KEY")
+                or os.environ.get("MOTHQUANTUM_KEY") or "")
+
+    def _headers(self) -> dict:
+        return {"Authorization": f"Bearer {self._key()}",
+                "User-Agent": self.UA, "Accept": "application/json"}
+
+    def _get(self, path: str):
+        with urllib.request.urlopen(
+                urllib.request.Request(self.API + path, headers=self._headers()),
+                timeout=30) as resp:
+            return json.loads(resp.read())
+
+    def available(self, request: TaskRequest) -> tuple[bool, str]:
+        if not self._key():
+            return False, "MOTHQUANTUM_API_KEY unset (slot reserved)"
+        return True, "ok"
+
+    def execute(self, request: TaskRequest) -> TaskResult:
+        ok, why = self.available(request)
+        if not ok:
+            return TaskResult("", self.name, 0.0, 0.0, error=f"refused:{why}")
+        engine = request.context.get("engine", "coin-toss-v1")
+        params = request.context.get("params", {})
+        poll_s = float(request.context.get("poll_s", 2))
+        max_polls = int(request.context.get("max_polls", 90))
+        start = time.monotonic()
+        try:
+            submit = urllib.request.Request(
+                f"{self.API}/engines/{engine}/process", method="POST",
+                headers={**self._headers(), "Content-Type": "application/json"},
+                data=json.dumps({"params": params}).encode())
+            with urllib.request.urlopen(submit, timeout=60) as resp:
+                job_id = json.loads(resp.read())["job_id"]
+            status = "queued"
+            for _ in range(max_polls):
+                status = self._get(f"/jobs/{job_id}/status")["status"]
+                if status in ("completed", "failed", "cancelled"):
+                    break
+                if (time.monotonic() - start) * 1000 > request.max_latency_ms:
+                    return TaskResult("", self.name, (time.monotonic() - start) * 1000,
+                                      0.0, error=f"latency budget exhausted polling {job_id}")
+                time.sleep(poll_s)
+            if status != "completed":
+                return TaskResult("", self.name, (time.monotonic() - start) * 1000,
+                                  0.0, error=f"job {job_id} terminal status {status}")
+            result = self._get(f"/jobs/{job_id}/result")
+            out = json.dumps(result, sort_keys=True)
+            meta = {"engine": engine, "job_id": job_id}
+            bell = (result.get("result", {}).get("output", {}).get("bell_witness")
+                    or {})
+            if bell.get("S") is not None:
+                meta["bell_s"] = bell["S"]
+            return TaskResult(out, self.name, (time.monotonic() - start) * 1000,
+                              self.estimate_cost(request), metadata=meta)
+        except Exception as e:
+            return TaskResult("", self.name, (time.monotonic() - start) * 1000,
+                              0.0, error=str(e)[:200])
+
+
 def default_roster() -> list:
-    """The full arm set: live + CLI + reserved slots. Decider sees all."""
+    """The full arm set: live + CLI + the two reserved slots, now LIVE.
+
+    EnvSlotProvider stays for future slots; typesafe/mothquantum graduated
+    to real executors the day the keys landed (2026-09-25). The refusal
+    wording is pin-contractual — test_core asserts it verbatim.
+    """
     return [
         KimiProvider(),
         CliProvider("claude", "claude"),
         CliProvider("crush", "crush"),
-        EnvSlotProvider("typesafe", "TYPESAFE_API_KEY"),
-        EnvSlotProvider("mothquantum", "MOTHQUANTUM_API_KEY"),
+        TypeSafeProvider(),
+        MothQuantumProvider(),
     ]
