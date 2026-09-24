@@ -1,0 +1,68 @@
+# Perception ticks: every push is felt. Every refusal is visible.
+name: ticks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "49 */5 * * *"   # off-peak heartbeat tick
+
+permissions:
+  contents: read
+
+jobs:
+  pins:
+    name: sealed-pins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run sealed pins
+        run: python3 -m unittest discover -s tests -q
+
+  perception-tick:
+    name: one-real-perception
+    runs-on: ubuntu-latest
+    needs: pins
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Tick the executor (refusals are honest output)
+        env:
+          KIMI_API_KEY: ${{ secrets.KIMI_API_KEY }}
+        run: |
+          python3 examples/fleet_tick.py --json | tee tick-receipt.json
+          test -s tick-receipt.json
+      - name: Upload the tick receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: tick-receipt
+          path: tick-receipt.json
+          retention-days: 14
+
+  family-crosscheck:
+    name: verify-against-siblings
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Chain recipe compatibility (family recipe: canonical JSON + FNV-1a-64)
+        run: python3 - <<'EOF'
+import sys; sys.path.insert(0, '.')
+from executor.ledger import Ledger, TaskRequest, TaskResult, canonical_hash
+# rows from ANY family substrate with this recipe must re-verify here
+L = Ledger()
+req = TaskRequest(task_id="family", prompt="cross-check", task_type="ci")
+L.book_bind(req)
+ok, problems = L.verify()
+assert ok, problems
+assert canonical_hash({"b": 1, "a": 2}) == canonical_hash({"a": 2, "b": 1})
+print("family recipe compatible")
+EOF
